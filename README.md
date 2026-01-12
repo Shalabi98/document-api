@@ -15,6 +15,56 @@ Built on **Spring Boot 3** using an N-Tier Layered Architecture:
 * **Validation:** Strict `@Valid` annotations ensure no bad data (negative amounts, invalid RUCs) enters the system.
 * **CORS Config:** Centralized security configuration to allow trusted frontend communication.
 
+## 🗄️ Database Configuration (MSSQL)
+By default, the application is configured for development. To connect to a production **Microsoft SQL Server**, follow these steps:
+1.  **Add Dependency:**
+    Ensure the MSSQL JDBC driver is present in your `pom.xml`:
+    ```xml
+    <dependency>
+        <groupId>com.microsoft.sqlserver</groupId>
+        <artifactId>mssql-jdbc</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+    ```
+2.  **Update Configuration:**
+    Modify `src/main/resources/application.properties` with your credentials:
+    ```properties
+    # MSSQL Connection Settings
+    spring.datasource.url=jdbc:sqlserver://YOUR_HOST:1433;databaseName=AquariusDB;encrypt=true;trustServerCertificate=true
+    spring.datasource.username=YOUR_USERNAME
+    spring.datasource.password=YOUR_PASSWORD
+    spring.datasource.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+    # JPA / Hibernate Settings
+    spring.jpa.show-sql=true
+    spring.jpa.hibernate.ddl-auto=update
+    spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.SQLServer2016Dialect
+    ```
+    *> **Note:** `ddl-auto=update` will automatically create the `DOCUMENT` table if it does not exist.*
+    *> **SQL SCRIPT FOR MANUAL CREATION OF DATABASE AND TABLE:** 
+    ```sql
+    -- 1. Create the Database
+    CREATE DATABASE AquariusDev;
+    GO
+    
+    -- 2. Switch to the new Database
+    USE AquariusDev;
+    GO
+    
+    -- 3. Create the Document Table
+    CREATE TABLE DOCUMENT (
+        id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        document_type VARCHAR(50) NOT NULL,
+        document_number VARCHAR(50),
+        document_date DATE NOT NULL,
+        issuer_ruc VARCHAR(11) NOT NULL,
+        amount DECIMAL(19, 2) NOT NULL,
+        image_base64 VARCHAR(MAX), 
+        created_at DATETIME2 DEFAULT GETDATE()
+    );
+    GO
+    ```
+
 ## 🛠 Prerequisites
 * **Java 17 JDK** or higher
 * **Maven 3.8+**
