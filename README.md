@@ -73,7 +73,7 @@ By default, the application is configured for development. To connect to a produ
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/your-username/document-api.git](https://github.com/your-username/document-api.git)
+    git clone [https://github.com/Shalabi98/document-api.git](https://github.com/Shalabi98/document-api.git)
     cd document-api
     ```
 
